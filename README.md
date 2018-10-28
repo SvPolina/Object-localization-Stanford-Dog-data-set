@@ -15,5 +15,5 @@ Learning process:
 For this task we've used the pretrained ResNet18. The lower layers of the network are activated with the primitive features 
 (texture,color etc.) which makes them sharable with other applications. We've changed only the number of the learned 
 classes to 4 - Xmin,Ymin,w,h of the bounding box.
-After 10 epochs the achieved accuracy on the train dataset was:91.57%
-While on the test dataset the achieved performance was:80%
+After 10 epochs the achieved accuracy on the train dataset was:~91%
+While on the test dataset the achieved performance was:~60%
