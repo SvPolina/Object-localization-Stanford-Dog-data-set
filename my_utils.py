@@ -1,6 +1,31 @@
 import torch
 import torchvision
 
+
+class AverageMeter(object):
+    def __init__(self):
+        self.reset()
+        
+    def reset(self):
+        self.val = 0
+        self.avg = 0
+        self.sum = 0
+        self.cnt = 0
+        
+    def update(self, val, n=1):
+        self.val = val
+        self.sum += val * n
+        self.cnt += n
+        self.avg = self.sum / self.cnt
+        
+def calcAccuracy(preds, targets, im_sizes, theta=0.75):
+    preds = transRect_inv(preds.clone(), im_sizes)
+    preds = formRect(preds, im_sizes)
+    targets = transRect_inv(targets.clone(), im_sizes)
+    cmp = compare(preds, targets)    
+    corr = cmp >= theta).sum()  
+    return float(corr.item() / preds.size(0))   
+
 def get2D_tensor(inp):
     inp = torch.Tensor(inp)
     if len(inp.size()) < 2:
@@ -75,26 +100,4 @@ def compare(frames1, frames2):
     
     return iarea  / (area1 + area2 - iarea)    
 
-def calcAccuracy(preds, targets, im_sizes, theta=0.75):
-    preds = transRect_inv(preds.clone(), im_sizes)
-    preds = formRect(preds, im_sizes)
-    targets = transRect_inv(targets.clone(), im_sizes)
-    IoU = compare(preds, targets)    
-    corr = (IoU >= theta).sum()  
-    return float(corr.item() / preds.size(0))
 
-class AverageMeter(object):
-    def __init__(self):
-        self.reset()
-        
-    def reset(self):
-        self.val = 0
-        self.avg = 0
-        self.sum = 0
-        self.cnt = 0
-        
-    def update(self, val, n=1):
-        self.val = val
-        self.sum += val * n
-        self.cnt += n
-        self.avg = self.sum / self.cnt
